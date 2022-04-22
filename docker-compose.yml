@@ -1,5 +1,19 @@
 version: "3"
 services:
+  bregabot-postgres:
+    image: postgres
+    container_name: bregabot-postgres
+    environment:
+      - POSTGRES_DB=bregabot
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - bregabotPostgresData:/data/postgres
+    ports:
+      - "5432:5432"
   app:
     build: .
     command: node build/main.js
+
+volumes:
+  bregabotPostgresData:

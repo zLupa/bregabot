@@ -1,17 +1,26 @@
-import "dotenv/config";
 import "reflect-metadata";
+import "dotenv/config";
+import "./container/index";
 import { Intents } from "discord.js";
-import { Client } from "discordx";
-import { dirname, importx } from "@discordx/importer";
+import { Client, DIService } from "discordx";
+import { importx } from "@discordx/importer";
+import { container } from "tsyringe";
+import { dirname } from "path";
+
+DIService.container = container;
 
 export const client = new Client({
-  intents: [Intents.FLAGS.GUILD_MEMBERS],
+  intents: [Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILDS],
   botGuilds: [(client) => client.guilds.cache.map((guild) => guild.id)],
+});
+
+client.on("interactionCreate", async (interaction) => {
+  await client.executeInteraction(interaction);
 });
 
 async function run() {
   await importx(
-    dirname(import.meta.url) + "/{events,commands,api}/**/*.{ts,js}"
+    `/home/haggstrom/files-partition/Documents/bregabot/dist/{events,commands}/**/*.{ts,cjs}`
   );
 
   if (!process.env.BOT_TOKEN) {

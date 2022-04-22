@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Guild {
+  id   String @id @default(uuid())
+  name String
+
+  discordId String @unique
+
+  selfBotSetting SelfBotSetting?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("guilds")
+}
+
+enum Action {
+  BAN
+  KICK
+  TIMEOUT
+}
+
+model SelfBotSetting {
+  id String @id @default(uuid())
+
+  guild   Guild  @relation(fields: [guildId], references: [id])
+  guildId String @unique
+
+  detectionAction Action @default(KICK)
+
+  punishmentTimeInSeconds Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  @@map("selfbot_action_settings")
+}
