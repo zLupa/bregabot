@@ -3,17 +3,19 @@ services:
   bregabot-postgres:
     image: postgres
     container_name: bregabot-postgres
+    network_mode: "host"
     environment:
       - POSTGRES_DB=bregabot
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
       - bregabotPostgresData:/data/postgres
-    ports:
-      - "5432:5432"
   app:
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@localhost:5432/bregabot?schema=public
+      - BOT_TOKEN=OTYxMzQxODE5NTcxMDE1NzAw.Yk3lVg.RA6_8Op_eKmCYLm2TH-GQAgcIQM
     build: .
-    command: node build/main.js
+    network_mode: "host"
 
 volumes:
   bregabotPostgresData:

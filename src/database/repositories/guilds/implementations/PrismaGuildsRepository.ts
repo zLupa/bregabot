@@ -6,7 +6,9 @@ import type { ICreateGuild, IGuildsRepository } from "../IGuildsRepository";
 @injectable()
 export class PrismaGuildsRepository implements IGuildsRepository {
   async create({ discordId, name }: ICreateGuild): Promise<Guild> {
-    const guild = await prismaClient.guild.create({});
+    const guild = await prismaClient.guild.create({
+      data: { discordId, name },
+    });
 
     return guild;
   }

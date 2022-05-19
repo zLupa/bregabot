@@ -1,11 +1,10 @@
-import "reflect-metadata";
+import "./reflect";
 import "dotenv/config";
 import "./container/index";
 import { Intents } from "discord.js";
 import { Client, DIService } from "discordx";
 import { importx } from "@discordx/importer";
 import { container } from "tsyringe";
-import { dirname } from "path";
 
 DIService.container = container;
 
@@ -19,9 +18,7 @@ client.on("interactionCreate", async (interaction) => {
 });
 
 async function run() {
-  await importx(
-    `/home/haggstrom/files-partition/Documents/bregabot/dist/{events,commands}/**/*.{ts,cjs}`
-  );
+  await importx(`${__dirname}/{events,commands}/**/*.{ts,js}`);
 
   if (!process.env.BOT_TOKEN) {
     throw Error("Could not find BOT_TOKEN in your environment");

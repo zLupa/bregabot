@@ -1,36 +1,17 @@
-## build runner
-FROM node:lts-alpine as build-runner
+FROM node:16.9.0-slim
 
-# Set temp directory
-WORKDIR /tmp/app
+RUN apt-get update
+RUN apt-get install -y openssl
 
-# Move package.json
-COPY package.json .
-
-# Install dependencies
-RUN npm install
-
-# Move source files
-COPY src ./src
-COPY tsconfig.json   .
-
-# Build project
-RUN npm run build
-
-## producation runner
-FROM node:lts-alpine as prod-runner
-
-# Set work directory
 WORKDIR /app
 
-# Copy package.json from build-runner
-COPY --from=build-runner /tmp/app/package.json /app/package.json
+COPY package.json ./
+COPY *.lock ./
+RUN yarn
 
-# Install dependencies
-RUN npm install --only=production
+COPY . .
 
-# Move build files
-COPY --from=build-runner /tmp/app/build /app/build
+RUN yarn build
+RUN yarn prisma generate
 
-# Start bot
-CMD [ "node", "build/main.js" ]
+CMD [ "yarn", "start" ]

@@ -1,16 +1,22 @@
-import { Action, SelfBotSetting } from "@prisma/client";
+import { SelfBotSetting } from "@prisma/client";
 
 export interface ICreateSelfbotSetting {
   guildId: string;
-  detectionAction: Action;
+  detectionAction: ActionEnum;
   punishmentTimeInSeconds: number;
 }
 
 export interface IUpdateSelfbotSetting {
   id: string;
   guildId?: string;
-  detectionAction?: Action;
+  detectionAction?: ActionEnum;
   punishmentTimeInSeconds?: number;
+}
+
+export enum ActionEnum {
+  BAN = "BAN",
+  KICK = "KICK",
+  TIMEOUT = "TIMEOUT",
 }
 
 export interface ISelfBotSettingsRepository {
